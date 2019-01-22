@@ -1,0 +1,55 @@
+Modes:
+
+	Insert - Brush is on the canvas
+	Normal - Brush is off the canvas
+	Command - Mixing your pallete
+
+Starting Vim:
+
+	vim <file>
+	vim, :e <file>
+
+Pen to the page:
+
+	i - Enter insert mode at cursror
+	I - Enter insert mode at first non-blank character
+	s - Delete character under cursor and enter insert mode
+	S - Delete line and begin insert at the beginning of same line
+	a - Enter insert mode _after_ cursor
+	A - Enter insert mode at the end of the line
+	o - Enter insert mode on the next line
+	O - Enter insert mode on the above line
+	C - Delete from cursor to end of line and begin insert
+
+Moving:
+
+	k - up
+	h - left
+	l - right
+	j - down
+
+	w - Forward to the beginning of next word
+	W - Forward to the beggining of the next WORD
+	b - Backward to the next beginning of the word
+	B - Backward to the next beginning of a WORD
+	e - Forward to the next end of word
+	E - Forward to the next end of WORD
+
+
+Searching:
+
+	/ - Forward
+	? - Backward
+	* - Word under cursor - forward
+	g* - Word under cursor - forward
+	# - word under cursor -backward
+	g# - word under cursor - backward
+	n - next result, forward
+	N - next result, backward
+
+Copy/Paste:
+	y - Yank
+
+Undo :
+	u - undo suff
+	Ctrl-r - redo stuff
