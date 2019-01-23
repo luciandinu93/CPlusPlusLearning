@@ -15,19 +15,48 @@ int main(void)
     c = '@';
     cout << "The size of sqare is ";
     cin >> x_initial;
-    char v[x_initial][x_initial];          
+    char v[x_initial][2*x_initial];          
 
     x = x_initial;
 
-    // constructing the figures
-    for (int i = 0; i < x; i++)
+    // writing first line
+    for (int i = 0; i < 2 * x; i++)
     {
-        for (int j = 0; j < x; j++)
+        if (i % 2 == 0)
+        {
+            v[i][0] = c;
+        }
+        else
+        {
+            v[i][0] = ' ';
+        }
+    }
+
+    // writing the body of the sqare
+    for (int i = 1; i < 2 * x; i++)
+    {
+        for (int j = 0; j < x - 1; j++)
         {
             if (i == 0 || j == 0 || i == x-1 || j == x-1)
+            {
                 v[i][j] = c;
+            }
             else
+            {
                 v[i][j] = ' ';
+            }
+        }
+    }
+
+    for (int i = x; i < x+1; i++)
+    {
+        if (i % 2 == 0)
+        {
+            v[i][x-1] = c;
+        }
+        else
+        {
+            v[i][x-1] = ' ';
         }
     }
 
