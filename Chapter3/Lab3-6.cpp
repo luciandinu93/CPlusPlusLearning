@@ -1,10 +1,10 @@
-/* Finding day of year */ 
+/* Finding day of year */
 
 #include <iostream>
 
 using namespace std;
 
-struct Date 
+struct Date
 {
     int year;
     int month;
@@ -51,13 +51,37 @@ int dayOfYear(Date date)
     return dayNumber;
 }
 
+int daysBetween(Date d1, Date d2)
+{
+    int daysBetween = 0;
+
+    if(d1.year > d2.year)
+        return -1;
+    else if(d1.year >= d2.year && d1.month > d2.month)
+        return -1;
+    else if(d1.year >= d2.year && d1.month >= d2.month && d1.day > d2.day)
+        return -1;
+
+    daysBetween = dayOfYear(d2) - dayOfYear(d1);
+    for(int i = d1.year; i < d2.year; i++)
+    {
+        if(isLeap(i))
+            daysBetween += 366; // leap year
+        else
+            daysBetween += 365; // not leap year
+    }
+    return daysBetween;
+}
+
 int main(void)
 {
-    Date d;
-    
-    cout << "Enter year month day: ";
-    cin >> d.year >> d.month >> d.day;
-    cout << dayOfYear(d) << endl;
+    Date since, to;
+
+    cout << "Enter first date (y m d):";
+    cin >> since.year >> since.month >> since.day;
+    cout << "Enter second date (y m d):";
+    cin >> to.year >> to.month >> to.day;
+    cout << daysBetween(since, to) << endl;
 
     return 0;
 }
