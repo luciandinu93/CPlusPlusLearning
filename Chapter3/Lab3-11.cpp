@@ -43,6 +43,8 @@ void drawBalls(int max, int ballsNo)
         k++;
         ballsNo--;
     }
+
+    delete [] extractedBalls;
 }
 
 int main(void)
