@@ -7,6 +7,15 @@
 #include <iostream>
 #include <string>
 
+void lowerCase(std::string &str)
+{
+	for(int i = 0; i < str.length(); i++)
+	{
+		if(str[i] >= 'A' && str[i] <= 'Z')
+			str[i] = str[i] + ('z' - 'Z');
+	}
+}
+
 void removeWords(std::string words[], std::string &sentence, int words_number)
 {
 	int index, first, last;
@@ -78,49 +87,47 @@ void allocSpace(std::string *&common_words, int words_k)
 	common_words = new std::string[words_k];
 }
 
-	int main(void)
+int main(void)
+{
+	int words_k = 0, comma_k = 0, k = 0;
+	std::string *common_words, words_list, sentence, token = "";
+
+	std::cout << "Enter the words to be ignored separated by \',\': " << std::endl;
+	std::getline(std::cin, words_list);
+
+	std::cout << "\nEnter the search sentence: " << std::endl;
+	std::getline(std::cin, sentence);
+
+	// make sure the strings are lowercase
+	lowerCase(words_list);
+	lowerCase(sentence);
+
+	comma_k = getCommaNumber(words_list);
+	words_k = comma_k + 1;
+
+	// dynamically allocate memory
+	allocSpace(common_words, words_k);
+
+	// get the common_words
+	for(int i = 0; i < words_list.length(); i++)
 	{
-		int words_k = 0, comma_k = 0, k = 0;
-		std::string *common_words, words_list, sentence, token = "";
-
-		std::cout << "Enter the words to be ignored separated by \',\': " << std::endl;
-		std::getline(std::cin, words_list);
-
-		std::cout << "\nEnter the search sentence: " << std::endl;
-		std::getline(std::cin, sentence);
-
-		comma_k = getCommaNumber(words_list);
-		words_k = comma_k + 1;
-
-		std::cout << "words_k = " << words_k << std::endl;
-
-		allocSpace(common_words, words_k);
-
-		// get the common_words
-		for(int i = 0; i < words_list.length(); i++)
+		token += words_list[i]; // append letters
+		if(words_list[i] == ',')
 		{
-			token += words_list[i]; // append letters
-			if(words_list[i] == ',')
-			{
-				common_words[k] = token.substr(0, token.length()-1);
-				k++;
-				token = "";
-			}
-
-			if(k == comma_k)
-			{
-				common_words[comma_k] = token;
-			}
+			common_words[k] = token.substr(0, token.length()-1);
+			k++;
+			token = "";
 		}
 
-		removeWords(common_words, sentence, comma_k+1);
-
-		displaySentence(sentence);
-
-		for(int i = 0; i < comma_k+1; i++)
+		if(k == comma_k)
 		{
-			std::cout << i+1 << ". = " << common_words[i] << std::endl;
+			common_words[comma_k] = token;
 		}
-
-		return 0;
 	}
+
+	removeWords(common_words, sentence, comma_k+1);
+
+	displaySentence(sentence);
+	
+	return 0;
+}
