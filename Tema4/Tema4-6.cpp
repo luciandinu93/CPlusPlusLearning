@@ -20,24 +20,33 @@ std::string getAlphabet(void)
 
 bool isAnagram(std::string word1, std::string word2)
 {
+	int k;
 	std::string alphabet = getAlphabet();
 	int letters_count[26] = {0}, index = 0;
 	
 	for(int i = 0; i < 26; i++)
 	{
-		k = 0;
-		for(j = 1; j < word1.length(); j++)
+		for(int j = 0; j < word1.length(); j++)
 		{
 			if(word1[j] == alphabet[i])
 			{
-				letters_count[k]++;
+				letters_count[i]++;
 			}
 		}
 	}
 	
 	for(int i = 0; i < 26; i++)
 	{
-		std::cout << alphabet[i] << " - " << letters_count[i];
+		k = 0;
+		for(int j = 0; j < word2.length(); j++)
+		{
+			if(word2[j] == alphabet[i])
+			{
+				k++;
+			}
+		}
+		if(k != letters_count[i])
+			return false;
 	}
 
 	
@@ -54,7 +63,11 @@ int main(void)
 	std::cout << "Enter second word: ";
 	std::getline(std::cin, word2);
 	
-	if(isAnagram(word1, word2))
+	if(word1.length() != word2.length())
+	{
+		std::cout << "The words " << word1 << " and " << word2 << " are not anagram.";	
+	}
+	else if(isAnagram(word1, word2))
 	{
 		std::cout << "The words " << word1 << " and " << word2 << " are anagram.";
 	}
