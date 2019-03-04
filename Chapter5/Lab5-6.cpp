@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <string>
+#include <exception>
 
 class FlightBooking
 {
@@ -35,18 +36,19 @@ FlightBooking::FlightBooking(int id, int capacity, int reserved)
     }
     else if(reserved < 0)
     {
-        this->reserved = reserved;
+        this->reserved = 0;
     }
     else
     {
-        this->reserved = 1.05 * capacity;
-    }
+        std::cout << "Can not perform this operation!" << std::endl;
+		throw 1;
+	}
 }
 
 void FlightBooking::printStatus(void)
 {
     std::cout << "Flight " << id << " : " << reserved << "/" << capacity << " " <<
-        "(" << (int)((float)reserved/capacity * 100) << "%) seats reserved";
+        "(" << (int)((float)reserved/capacity * 100) << "%) seats reserved" << std::endl;
 }
 
 bool FlightBooking::reserveSeats(int number_of_seats)
@@ -58,6 +60,10 @@ bool FlightBooking::reserveSeats(int number_of_seats)
         reserved = reserved + number_of_seats;
         return true;
     }
+	else
+	{
+		std::cout << "Can not perform this operation!" << std::endl;
+	}
     return false;
 }
 
@@ -68,7 +74,75 @@ bool FlightBooking::cancelReservations(int number_of_seats)
         reserved = reserved - number_of_seats;
         return true;
     }
+	else
+	{
+		std::cout << "Can not perform this operation!" << std::endl;
+	}
     return false;
+}
+
+void startCommand(FlightBooking &booking, std::string command, int seats)
+{
+	if(command.compare("add") == 0)
+	{
+		booking.reserveSeats(seats);
+	}
+	else if(command.compare("cancel") == 0)
+	{
+		booking.cancelReservations(seats);
+	}
+	else
+	{
+		std::cout << "ERROR:Unknown command!" << std::endl;
+	}
+}
+
+void processCommand(FlightBooking &booking, std::string command)
+{
+	int space_count = 0, space_pos, num;
+	std::string action, number;
+	
+	for(int i = 0; i < command.length(); i++)
+	{
+		if(command[i] == ' ')
+		{
+			space_count++;
+			space_pos = i;
+		}
+	}
+	
+	if(space_count == 0 && command.compare("quit") == 0)
+	{
+		std::cout << "The program will exit!" << std::endl;
+	}		
+	else if(space_count == 0)
+	{
+		std::cout << "Invalid command, try again!" << std::endl;
+	}
+	else if(space_count > 1)
+	{
+		std::cout << "Invalid command, try again!" << std::endl;
+	}
+	else
+	{
+		action = command.substr(0, space_pos);
+		number = command.substr(space_pos+1);
+		
+		try
+		{
+			num = std::stoi(number);
+			// use command
+			startCommand(booking, action, num);
+		}
+		catch (const std::invalid_argument& ia)
+		{
+			std::cout << "ERROR:The argument is invalid." << std::endl;
+		}
+		catch (const std::out_of_range& ofr)
+		{
+			std::cout << "ERROR:The argument is out of range." << std::endl;
+		}
+	}
 }
 
 int main(void)
@@ -79,20 +153,30 @@ int main(void)
     std::cout << "Provide flight capacity: ";
     std::cin >> capacity;
 
-    std::cout << "Provide number of reserved seats:";
+    std::cout << "Provide number of reserved seats: ";
     std::cin >> reserved;
-
+	
     std::cout << std::endl;
+	std::cin.ignore(); // ignore \n char from the buffer
+	try
+	{
+		FlightBooking booking(1, capacity, reserved);
 
-    FlightBooking booking(1, capacity, reserved);
-
-    std::string command = "";
-    while(command != "quit")
-    {
-        booking.printStatus();
-        std::cout << "What would you like to do?: ";
-        std::getline(std::cin, command);
-        std::cout << command << ". " << std::endl;
-    }
+		std::string command = "";
+		while(command != "quit")
+		{
+			booking.printStatus();
+			std::cout << "What would you like to do? (add \'x\' or cancel \'x\'): ";
+			
+			std::getline(std::cin, command);
+			processCommand(booking, command);
+		}
+	}
+	catch(int e)
+	{
+		return 1;
+	}
+    
+	return 0;
 }
 
