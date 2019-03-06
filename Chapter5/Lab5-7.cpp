@@ -26,6 +26,12 @@ private:
 
 int FlightBooking::flights_no = 0; // initializer
 
+FlightBooking::~FlightBooking()
+{
+	FlightBooking::flights_no--;
+	std::cout << "The flight with " << getId() << " has been canceled." << std::endl;
+}
+
 FlightBooking::FlightBooking()
 {
 	id = 0;
@@ -92,35 +98,37 @@ bool FlightBooking::cancelReservations(int number_of_seats)
     return false;
 }
 
-bool id_exists(FlightBooking *booking, int id)
+bool id_exists(FlightBooking **booking, int id)
 {
 	bool exists = false;
 	for(int i = 0; i < FlightBooking::getFligthsNo(); i++)
 	{
-		if(booking[i].getId() == id)
+		if((*booking[i]).getId() == id)
 			exists = true;
 	}
 
 	return (exists) ? true : false;
 }
 
-void startCommand(FlightBooking *booking, std::string command, int id, int seats)
+
+void startCommand(FlightBooking **booking, std::string command, int id, int seats)
 {
 	if(command.compare("create") == 0)
 	{
-		booking[FlightBooking::getFligthsNo()] = FlightBooking(id, seats, 0);
+		booking[FlightBooking::getFligthsNo()] = new FlightBooking(id, seats, 0);
+		
 	}
 	else if(command.compare("add") == 0)
 	{
 		if(id_exists(booking, id))
-			booking[id].reserveSeats(seats);
+			(*booking[id]).reserveSeats(seats);
 		else
 			std::cout << "The fligth with the required id does not exists" << std::endl;
 	}
 	else if(command.compare("cancel") == 0)
 	{
 		if(id_exists(booking, id))
-			booking[id].cancelReservations(seats);
+			(*booking[id]).cancelReservations(seats);
 		else
 			std::cout << "The fligth with the required id does not exists" << std::endl;
 	}
@@ -149,7 +157,7 @@ bool to_int(std::string str, int &number)
 	}
 }
 
-void processCommand(FlightBooking *booking, std::string command)
+void processCommand(FlightBooking **booking, std::string command)
 {
 	int space_count = 0, space_pos, id, cap, seats;
 	std::string action, number1, number2;
@@ -183,17 +191,16 @@ void processCommand(FlightBooking *booking, std::string command)
 			{
 				for(int i = 0; i < FlightBooking::getFligthsNo(); i++)
 				{
-					if(booking[i].getId() == id)
+					if((*booking[i]).getId() == id)
 						id_exists = true;
 				}
 
 				if(id_exists)
 				{
-					for(int j = i; j < FlightBooking::getFligthsNo(); j++)
+					for(int j = 0; j < FlightBooking::getFligthsNo(); j++)
                     {
                         booking[j] = booking[j+1];
                     }
-                    FlightBooking::getFligthsNo()--;
 				}
 				else
 				{
@@ -240,7 +247,7 @@ void processCommand(FlightBooking *booking, std::string command)
 
 int main(void)
 {
-	FlightBooking booking[10];
+	FlightBooking *booking[10];
     int reserved = 0;
     int capacity = 0;
 
@@ -250,14 +257,14 @@ int main(void)
 		if(FlightBooking::getFligthsNo() != 0)
 			for(int i = 0; i < FlightBooking::getFligthsNo(); i++)
 			{
-				booking[i].printStatus();
+				(*booking[i]).printStatus();
 			}
 
 		std::cout << "What would you like to do? " << std::endl;
-		std::cout << "\tcreate[id][cap]" << std::endl;
-		std::cout << "\tdelete[id]" << std::endl;
-		std::cout << "\tadd[id][n]" << std::endl;
-		std::cout << "\tcancel[id][n]" << std::endl;
+		std::cout << "\tcreate [id] [cap]" << std::endl;
+		std::cout << "\tdelete [id]" << std::endl;
+		std::cout << "\tadd [id] [n]" << std::endl;
+		std::cout << "\tcancel[id] [n]" << std::endl;
 		std::cout << "\tquit" << std::endl;
 		std::cout << "Your option: ";
 
