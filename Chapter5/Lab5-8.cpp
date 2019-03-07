@@ -77,19 +77,86 @@ int spaces_nr(std::string command)
 {
 }
 
+struct command_struct
+{
+	std::string action;
+	std::string name;
+	int id;
+	int n;
+};
+
+void process(command_struct &cstr, std::string command, bool &flag)
+{
+	int space_index, space_index2;
+	
+	space_index = command.find(' ');
+	
+	if(space_index == std::string::npos)
+	{
+		flag = false;
+		std::cout << "ERROR:Unknown command!" << std::endl;
+	}
+	else
+	{
+		cstr.action = command.substr(0, space_index);
+		
+		if(cstr.action == "create")
+		{
+			if(command.find(' ', space_index+1) != std::string::npos)
+			{
+				space_index2 = command.find(' ', space_index+1);
+				try
+				{
+					cstr.id = stoi(command.substr(0, space_index2));
+					cstr.name = command.substr(space_index2+1);
+					flag = true;
+				}
+				catch
+				{
+					std::cout << "ERROR:ID can not be converted to INT!" << std::endl;
+					flag = false;
+				}
+			}
+			else
+			{
+				std::cout << "ERROR:No ID provided!" << std::endl;
+				flag = false;
+			}
+			
+		}
+		else if(cstr.action == "delete")
+		{
+			// TO DO
+		}
+		else if(cstr.action == "extend")
+		{
+			// TO DO
+		}
+		else if(cstr.action == "cancel")
+		{
+			// TO DO
+		}
+		else
+		{
+			flag = false;
+			std::cout << "ERROR:Unknown command!" << std::endl;
+		}
+	}
+}
+
 int main(void)
 {
 	GymMembership gym_mem[10];
 	std::string command, action, name, id, n;
-	int space_index1, space_index2, i_id, i_n;
+	int space_index, i_id, i_n;
+	bool flag = false;
 	
 	while(true)
 	{
 		if(GymMembership::get_memberships_no() == 0)
 			std::cout << "No members in the system" << std::endl;
 		
-		std::cin.ignore();
-		std::getline(std::cin, command);
+		std::getline(std::cin, command, flag);
 		
 		std::cout << "Command: " << command << std::endl;
 		
@@ -97,23 +164,12 @@ int main(void)
 			break;
 		else
 		{
-			if(spaces_nr(command) == 0)
-			{
-				std::cout << "ERROR:Unknown command" << std::endl;
-			}
-			else if(spaces_nr(command) == 1)
-			{
-				space_index1 = command.find(' ');
-				
-				action = command.substr(0, space_index1);
-				std::cout << "Action: ." << action << "." << std::endl;
-				
-				id = command.substr(space_index1+1);
-				std::cout << "Id: ." << id << "." << std::endl;
-			}
-		}
+			command_struct cstr;
+			process(cstr, command);
+			if(flag)
+				start(cstr);
+		}	
 	}
-	
 	return 0;
 }
 
