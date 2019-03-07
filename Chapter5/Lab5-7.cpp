@@ -113,9 +113,10 @@ bool id_exists(FlightBooking **booking, int id)
 
 void startCommand(FlightBooking **booking, std::string command, int id, int seats)
 {
+	int flights_number = FlightBooking::getFligthsNo(); // fix 1
 	if(command.compare("create") == 0)
 	{
-		booking[FlightBooking::getFligthsNo()] = new FlightBooking(id, seats, 0);
+		booking[flights_number] = new FlightBooking(id, seats, 0);
 		
 	}
 	else if(command.compare("add") == 0)
