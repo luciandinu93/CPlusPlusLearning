@@ -15,6 +15,8 @@
 #include <iostream>
 #include <string>
 
+#define MAX_PERS 10
+
 class GymMembership
 {
 public:
@@ -41,6 +43,7 @@ GymMembership::GymMembership(int id, std::string name)
 	this->name = name;
 	this->months = 0;
 	GymMembership::memberships_no++;
+	std::cout << "The memeber " << id << " named " << name << " has been created!" << std::endl;
 }
 
 GymMembership::GymMembership(void)
@@ -72,11 +75,7 @@ void GymMembership::display(void)
 			this->months << " months" << std::endl;
 }
 
-// TO DO
-int spaces_nr(std::string command)
-{
-}
-
+// structure for commands
 struct command_struct
 {
 	std::string action;
@@ -85,9 +84,31 @@ struct command_struct
 	int n;
 };
 
-void process(command_struct &cstr, std::string command, bool &flag)
+bool id_exists(GymMembership *gym_mem, int id)
+{
+	for(int i = 0; i < MAX_PERS; i++)
+	{
+		if(gym_mem[i].getId() == id)
+			return true;
+	}
+	
+	return false;
+}
+
+void start_command(command_struct &cstr)
+{
+	std::cout << "The created struct is : " << std::endl;
+	std::cout << "Action: ." << cstr.action << "." << std::endl;
+	std::cout << "Id: ." << cstr.id << "." << std::endl;
+	std::cout << "Name: ." << cstr.name << "." << std::endl;
+	std::cout << "n: ." << cstr.n << "." << std::endl;
+	
+}
+
+void process(GymMembership *gym_mem, command_struct &cstr, std::string command, bool &flag)
 {
 	int space_index, space_index2;
+	std::string id;
 	
 	space_index = command.find(' ');
 	
@@ -107,11 +128,21 @@ void process(command_struct &cstr, std::string command, bool &flag)
 				space_index2 = command.find(' ', space_index+1);
 				try
 				{
-					cstr.id = stoi(command.substr(0, space_index2));
+					id = command.substr(space_index+1, space_index2 - space_index);
+					cstr.id = stoi(id);
 					cstr.name = command.substr(space_index2+1);
-					flag = true;
+					cstr.n = 0;
+					if(id_exists(gym_mem, cstr.id))
+					{
+						std::cout << "This id is already taken by another person: " << std::endl;
+						flag = false;
+					}
+					else
+					{
+						flag = true;
+					}
 				}
-				catch
+				catch(...)
 				{
 					std::cout << "ERROR:ID can not be converted to INT!" << std::endl;
 					flag = false;
@@ -119,7 +150,7 @@ void process(command_struct &cstr, std::string command, bool &flag)
 			}
 			else
 			{
-				std::cout << "ERROR:No ID provided!" << std::endl;
+				std::cout << "ERROR:No ID or name provided!" << std::endl;
 				flag = false;
 			}
 			
@@ -146,9 +177,9 @@ void process(command_struct &cstr, std::string command, bool &flag)
 
 int main(void)
 {
-	GymMembership gym_mem[10];
+	GymMembership gym_mem[MAX_PERS];
 	std::string command, action, name, id, n;
-	int space_index, i_id, i_n;
+	int space_index, i_id, i_n, members;
 	bool flag = false;
 	
 	while(true)
@@ -156,7 +187,7 @@ int main(void)
 		if(GymMembership::get_memberships_no() == 0)
 			std::cout << "No members in the system" << std::endl;
 		
-		std::getline(std::cin, command, flag);
+		std::getline(std::cin, command);
 		
 		std::cout << "Command: " << command << std::endl;
 		
@@ -164,10 +195,18 @@ int main(void)
 			break;
 		else
 		{
+			members = GymMembership::get_memberships_no();
 			command_struct cstr;
-			process(cstr, command);
+			process(gym_mem, cstr, command, flag);
 			if(flag)
-				start(cstr);
+			{
+				start_command(cstr);
+				if(cstr.action == "create")
+				{
+					gym_mem[members] = GymMembership(cstr.id, cstr.name);
+				}
+			}
+				
 		}	
 	}
 	return 0;
