@@ -22,28 +22,23 @@ class GymMembership
 public:
 	GymMembership(int id, std::string name);
 	GymMembership(void);
-	~GymMembership(void);
 	void extend(int months);
 	void cancel(void);
 	void display(void);
 	int getId() {return this->id;}
-	static int get_memberships_no() {return memberships_no;}
 private:
 	int id;
 	std::string name;
 	int months;
-	static int memberships_no;
 };
-
-int GymMembership::memberships_no = 0; // initialize
 
 GymMembership::GymMembership(int id, std::string name)
 {
 	this->id = id;
 	this->name = name;
 	this->months = 0;
-	GymMembership::memberships_no++;
-	std::cout << "The memeber " << id << " named " << name << " has been created!" << std::endl;
+	// Debug only
+	// std::cout << "The memeber " << id << " named " << name << " has been created!" << std::endl;
 }
 
 GymMembership::GymMembership(void)
@@ -53,15 +48,9 @@ GymMembership::GymMembership(void)
 	this->months = 0;
 }
 
-GymMembership::~GymMembership(void)
-{
-	memberships_no--;
-	std::cout << "The memeber " << getId() << " has been destroyed" << std::endl;
-}
-
 void GymMembership::extend(int months)
 {
-	this->months = months;
+	this->months += months;
 }
 
 void GymMembership::cancel(void)
@@ -95,7 +84,8 @@ bool id_exists(GymMembership *gym_mem, int id)
 	return false;
 }
 
-void start_command(command_struct &cstr)
+// Debug only
+void display_command_struc(command_struct &cstr)
 {
 	std::cout << "The created struct is : " << std::endl;
 	std::cout << "Action: ." << cstr.action << "." << std::endl;
@@ -108,7 +98,7 @@ void start_command(command_struct &cstr)
 void process(GymMembership *gym_mem, command_struct &cstr, std::string command, bool &flag)
 {
 	int space_index, space_index2;
-	std::string id;
+	std::string id, n;
 	
 	space_index = command.find(' ');
 	
@@ -119,7 +109,7 @@ void process(GymMembership *gym_mem, command_struct &cstr, std::string command, 
 	}
 	else
 	{
-		cstr.action = command.substr(0, space_index);
+		cstr.action = command.substr(0, space_index); // Get the action
 		
 		if(cstr.action == "create")
 		{
@@ -132,9 +122,14 @@ void process(GymMembership *gym_mem, command_struct &cstr, std::string command, 
 					cstr.id = stoi(id);
 					cstr.name = command.substr(space_index2+1);
 					cstr.n = 0;
-					if(id_exists(gym_mem, cstr.id))
+					if(cstr.id == 0)
 					{
-						std::cout << "This id is already taken by another person: " << std::endl;
+						std::cout << "ERROR:ID = 0 is not a valid ID: " << std::endl;
+						flag = false;
+					}
+					else if(id_exists(gym_mem, cstr.id))
+					{
+						std::cout << "ERROR:This ID is already taken by another person: " << std::endl;
 						flag = false;
 					}
 					else
@@ -157,15 +152,102 @@ void process(GymMembership *gym_mem, command_struct &cstr, std::string command, 
 		}
 		else if(cstr.action == "delete")
 		{
-			// TO DO
+			if(command.find(' ', space_index+1) != std::string::npos)
+			{
+				std::cout << "ERROR:The format of delete command is not valid!" << std::endl;
+			}
+			else
+			{
+				try
+				{
+					id = command.substr(space_index+1);
+					cstr.id = stoi(id);
+					cstr.name = "";
+					cstr.n = 0;
+					if(id_exists(gym_mem, cstr.id))
+					{
+						flag = true;
+					}
+					else
+					{
+						std::cout << "ERROR:This ID does not exit! Cannot delete : " << std::endl;
+						flag = false;
+					}
+				}
+				catch(...)
+				{
+					std::cout << "ERROR:ID can not be converted to INT!" << std::endl;
+					flag = false;
+				}
+			}
 		}
 		else if(cstr.action == "extend")
 		{
-			// TO DO
+			if(command.find(' ', space_index+1) != std::string::npos)
+			{
+				space_index2 = command.find(' ', space_index+1);
+				try
+				{
+					id = command.substr(space_index+1, space_index2 - space_index);
+					n = command.substr(space_index2+1);
+					cstr.id = stoi(id);
+					cstr.name = "";
+					cstr.n = stoi(n);
+					if(id_exists(gym_mem, cstr.id))
+					{
+						flag = true;
+					}
+					else
+					{
+						std::cout << "ERROR:This ID does not exist: " << std::endl;
+						flag = false;
+					}
+				}
+				catch(...)
+				{
+					std::cout << "ERROR:ID can not be converted to INT!" << std::endl;
+					flag = false;
+				}
+			}
+			else
+			{
+				std::cout << "ERROR:No ID or months provided!" << std::endl;
+				flag = false;
+			}
 		}
 		else if(cstr.action == "cancel")
 		{
-			// TO DO
+			if(command.find(' ', space_index+1) != std::string::npos)
+			{
+				std::cout << "ERROR:No ID or months provided!" << std::endl;
+				flag = false;
+			}
+			else
+			{
+				space_index2 = command.find(' ', space_index+1);
+				try
+				{
+					id = command.substr(space_index+1, space_index2 - space_index);
+					n = command.substr(space_index2+1);
+					cstr.id = stoi(id);
+					cstr.name = "";
+					cstr.n = 0;
+					if(id_exists(gym_mem, cstr.id))
+					{
+						flag = true;
+					}
+					else
+					{
+						std::cout << "ERROR:This ID does not exist: " << std::endl;
+						flag = false;
+					}
+				}
+				catch(...)
+				{
+					std::cout << "ERROR:ID can not be converted to INT!" << std::endl;
+					flag = false;
+				}
+			}
 		}
 		else
 		{
@@ -179,13 +261,26 @@ int main(void)
 {
 	GymMembership gym_mem[MAX_PERS];
 	std::string command, action, name, id, n;
-	int space_index, i_id, i_n, members;
+	std::string line(50 , '-');
+	int space_index, i_id, i_n, members = 0;
 	bool flag = false;
 	
 	while(true)
 	{
-		if(GymMembership::get_memberships_no() == 0)
+		if(members == 0)
+		{
 			std::cout << "No members in the system" << std::endl;
+			std::cout << std::endl;
+		}
+		else
+		{
+			std::cout << std::endl;
+			std::cout << line << std::endl;
+			for(int i = 0; i < members; i++)
+				gym_mem[i].display();
+			std::cout << line << std::endl;
+			std::cout << std::endl;
+		}
 		
 		std::getline(std::cin, command);
 		
@@ -195,15 +290,60 @@ int main(void)
 			break;
 		else
 		{
-			members = GymMembership::get_memberships_no();
 			command_struct cstr;
 			process(gym_mem, cstr, command, flag);
 			if(flag)
 			{
-				start_command(cstr);
+				// Debug only
+				// display_command_struc(cstr);
 				if(cstr.action == "create")
 				{
-					gym_mem[members] = GymMembership(cstr.id, cstr.name);
+					if(members+1 < MAX_PERS)
+					{
+						gym_mem[members] = GymMembership(cstr.id, cstr.name);
+						members++;
+					}
+					else
+					{
+						std::cout << "ERROR:You can not add another membership! List is FULL!" << std::endl;
+					}
+					
+				}
+				else if(cstr.action == "delete")
+				{
+					for(int i = 0; i < MAX_PERS; i++)
+					{
+						if(gym_mem[i].getId() == cstr.id)
+						{
+							gym_mem[i] = gym_mem[i+1];
+						}
+					}
+					gym_mem[members-1] = GymMembership();
+					members--;
+				}
+				else if(cstr.action == "extend")
+				{
+					for(int i = 0; i < MAX_PERS; i++)
+					{
+						if(gym_mem[i].getId() == cstr.id)
+						{
+							gym_mem[i].extend(cstr.n);
+						}
+					}
+				}
+				else if(cstr.action == "cancel")
+				{
+					for(int i = 0; i < MAX_PERS; i++)
+					{
+						if(gym_mem[i].getId() == cstr.id)
+						{
+							gym_mem[i].cancel();
+						}
+					}
+				}
+				else
+				{
+					std::cout << "ERROR:Unknown command!" << std::endl;
 				}
 			}
 				
