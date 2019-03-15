@@ -1,7 +1,6 @@
 /* Proiect final: BitAcad Modulul 1 C++
  * Student: Dinu Dumitru-Lucian 
  */
-
 #include "Persoana.h"
 #include "MeniuPrincipal.h"
 #include "MeniuIntroducere.h"
@@ -11,6 +10,8 @@
 int main()
 {
 	int comanda;
+	Student* studenti;
+	Profesor* profesori;
 
 	do
 	{
@@ -21,8 +22,7 @@ int main()
 		switch(comanda)
 		{
 		case 1:
-			displayMI();
-			processInputComand(); // TO DO
+			processInputComand(studenti, profesori); // TO DO
 			break;
 		case 2:
 			displayMC();

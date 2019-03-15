@@ -151,16 +151,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileHandling.cpp" />
     <ClCompile Include="Final_project.cpp" />
     <ClCompile Include="Meniuri.cpp" />
     <ClCompile Include="Persoana.cpp" />
+    <ClCompile Include="PersonHandling.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileHandling.h" />
     <ClInclude Include="Listare.h" />
     <ClInclude Include="MeniuCautare.h" />
     <ClInclude Include="MeniuIntroducere.h" />
     <ClInclude Include="MeniuPrincipal.h" />
     <ClInclude Include="Persoana.h" />
+    <ClInclude Include="PersonHandling.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="STUDENTI.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
