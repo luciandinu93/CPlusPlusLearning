@@ -3,6 +3,7 @@
 #include "MeniuIntroducere.h"
 #include "MeniuCautare.h"
 #include "FileHandling.h"
+#include "PersonHandling.h"
 
 void displayMP(void)
 {
@@ -40,6 +41,105 @@ void displayAll(void)
 	// TO DO
 }
 
+void introducereStudenti(Student*& studenti)
+{
+	int nr_persoane;
+	std::string comanda_str;
+	std::cin.ignore();
+	do
+	{
+		try
+		{
+			nr_persoane = getPersoaneNr(STUDENTI_FILE);
+			if (!nr_persoane)
+			{
+				std::cout << "\n - Nu exista niciun student! - \n" << std::endl;
+				std::cout << "\nDoriti sa introduceti un nou student(d / n) ? " << std::endl;
+				std::getline(std::cin, comanda_str);
+				std::cout << "Comanda introdusa -" << comanda_str << "-" << std::endl;
+
+				if (comanda_str == "d")
+				{
+					allocateMemForStudent(studenti, 0, 1);
+					studenti[0] = createStudent();
+				}
+				else if (comanda_str != "n")
+					std::cout << "Comanda nu exista va rog introduceti d - da sau n - nu :";
+			}
+			else
+			{
+				std::cout << "\nExista " << nr_persoane << " studenti." << "\n";
+				allocateMemForStudent(studenti, nr_persoane, 1); // create studenti[0]
+				loadPersoaneArray(studenti, nr_persoane);
+				displayStudents(studenti, nr_persoane);
+				std::cout << "\nDoriti sa introduceti un nou student (d/n)?";
+				std::getline(std::cin, comanda_str);
+				if (comanda_str == "d")
+				{
+					allocateMemForStudent(studenti, nr_persoane, 1); // TO DO
+					studenti[nr_persoane] = createStudent();
+				}
+				else if (comanda_str != "n")
+					std::cout << "Comanda nu exista va rog introduceti d - da sau n - nu" << std::endl;
+			}
+		}
+		catch (const char* e)
+		{
+			std::cout << "ERROARE: la creeare student:" << e << std::endl;
+		}
+	} while (comanda_str != "n");
+}
+
+/*
+void introducereProfesori(Profesor*& profesori)
+{
+	int nr_profesori;
+	std::string comanda_str;
+	std::cin.ignore();
+	do
+	{
+		try
+		{
+			nr_profesori = getProfesoriNr();
+			loadStudentiArray(profesori, nr_profesori);
+			displayStudents(profesori, nr_profesori);
+			if (!nr_profesori)
+			{
+				std::cout << "\n - Nu exista niciun student! - \n" << std::endl;
+				std::cout << "\nDoriti sa introduceti un nou student(d / n) ? " << std::endl;
+				std::getline(std::cin, comanda_str);
+				std::cout << "Comanda introdusa -" << comanda_str << "-" << std::endl;
+
+				if (comanda_str == "d")
+				{
+					allocateMemForStudent(profesori, 0, 1);
+					profesori[0] = createProfesor();
+				}
+				else if (comanda_str != "n")
+					std::cout << "Comanda nu exista va rog introduceti d - da sau n - nu :";
+			}
+			else
+			{
+				std::cout << "\nExista " << nr_profesori << " studenti." << "\n";
+				std::cout << "\nDoriti sa introduceti un nou student (d/n)?";
+				std::getline(std::cin, comanda_str);
+				if (comanda_str == "d")
+				{
+					allocateMemForStudent(profesori, nr_profesori, 1); // TO DO
+					profesori[nr_profesori] = createProfesor();
+				}
+				else if (comanda_str != "n")
+					std::cout << "Comanda nu exista va rog introduceti d - da sau n - nu" << std::endl;
+			}
+		}
+		catch (const char* e)
+		{
+			std::cout << "ERROARE: la creeare student:" << e << std::endl;
+		}
+	} while (comanda_str != "n");
+}
+*/
+
 
 void processInputComand(Student*& studenti, Profesor*& profesori)
 {
@@ -54,50 +154,14 @@ void processInputComand(Student*& studenti, Profesor*& profesori)
 
 		std::cout << "Alegeti o optiune: ";
 		std::cin >> comanda;
-	
 
 		switch (comanda)
 		{
 		case 1:
-			do
-			{
-				try
-				{
-					nr_studenti = getStudentiNr();
-					if (!nr_studenti)
-					{
-						std::cin.ignore();
-						do
-						{
-							std::cout << "Nu exista niciun student!" << std::endl;
-							std::cout << "Doriti sa introduceti un nou student(d / n) ? " << std::endl;
-							std::getline(std::cin, comanda_str);
-							std::cout << "Comanda introdusa -" << comanda_str << "-" << std::endl;
-							if (comanda_str == "d")
-								studenti[0] = createStudent();
-							else if (comanda_str != "n")
-								std::cout << "Comanda nu exista va rog introduceti d - da sau n - nu" << std::endl;
-						} while (comanda_str != "n");
-					}
-					else
-					{
-						std::cout << "Doriti sa introduceti un nou student (d/n)?";
-						std::getline(std::cin, comanda_str);
-						if (comanda_str == "d")
-							studenti[nr_studenti] = createStudent();
-						else if (comanda_str != "n")
-							std::cout << "Comanda nu exista va rog introduceti d - da sau n - nu" << std::endl;
-					}
-				}
-				catch (const char* e)
-				{
-					std::cerr << e << std::endl;
-				}
-			} while (comanda_str != "n");
-			//studenti[0] = addStudent(); // TO DO
+			introducereStudenti(studenti);
 			break;
 		case 2:
-			//addProfesor(); // TO DO
+			//introducereProfesori(profesori);
 			break;
 		case 3:
 			break;

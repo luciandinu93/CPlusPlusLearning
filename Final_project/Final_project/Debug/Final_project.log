@@ -1,3 +1,4 @@
 ﻿  Meniuri.cpp
-c:\users\lucia\desktop\proiect final cpp\final project\final_project\final_project\meniuri.cpp(48): warning C4101: 'profesori_nr': unreferenced local variable
+c:\users\lucia\desktop\proiect final cpp\final project\final_project\final_project\meniuri.cpp(147): warning C4101: 'nr_studenti': unreferenced local variable
+c:\users\lucia\desktop\proiect final cpp\final project\final_project\final_project\meniuri.cpp(148): warning C4101: 'profesori_nr': unreferenced local variable
   Final_project.vcxproj -> C:\Users\lucia\Desktop\Proiect final CPP\Final Project\Final_project\Debug\Final_project.exe

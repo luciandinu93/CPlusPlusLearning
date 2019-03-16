@@ -5,6 +5,6 @@
 
 void displayMI(void);
 void processInputComand(Student*&, Profesor*&);
-Student createStudent(void);
-
+void introducereStudenti(Student*&);
+void introducereProfesori(Profesor*&);
 #endif MI_H
