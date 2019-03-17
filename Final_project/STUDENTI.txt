@@ -1,0 +1,2 @@
+[1 Lucian Dinu 10.000000]
+[2 Ionescu Popescu 5.000000]
